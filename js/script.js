@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
             navMenu.classList.toggle('active');
         });
         
-        // Close mobile menu when clicking on a link
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function() {
                 hamburger.classList.remove('active');
@@ -24,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const startCounting = (element) => {
         const target = parseInt(element.getAttribute('data-count'));
-        const duration = 2000; // 2 seconds
-        const increment = target / (duration / 16); // 60fps
+        const duration = 2000;
+        const increment = target / (duration / 16);
         let current = 0;
         
         const timer = setInterval(() => {
@@ -39,11 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 16);
     };
     
-    // Intersection Observer for counters
-    const observerOptions = {
-        threshold: 0.5
-    };
-    
+    const observerOptions = { threshold: 0.5 };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -70,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 "We're here to help 24/7"
             ];
             
-            // Change message
             const currentMessage = speechBubble.textContent;
             let newMessage;
             do {
@@ -79,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             speechBubble.textContent = newMessage;
             
-            // Add pulse animation
             this.classList.add('pulse');
             setTimeout(() => {
                 this.classList.remove('pulse');
@@ -91,10 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
-            
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
                 window.scrollTo({
@@ -105,160 +96,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Form Validation for Contact/Appointment Forms
-    const forms = document.querySelectorAll('form');
-    
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let isValid = true;
-            const requiredFields = this.querySelectorAll('[required]');
-            
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.classList.add('error');
-                    
-                    // Add error message if not exists
-                    if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
-                        const errorMsg = document.createElement('span');
-                        errorMsg.className = 'error-message';
-                        errorMsg.textContent = 'This field is required';
-                        errorMsg.style.color = '#e74c3c';
-                        errorMsg.style.fontSize = '0.8rem';
-                        errorMsg.style.marginTop = '5px';
-                        errorMsg.style.display = 'block';
-                        field.parentNode.insertBefore(errorMsg, field.nextSibling);
-                    }
-                } else {
-                    field.classList.remove('error');
-                    
-                    // Remove error message if exists
-                    if (field.nextElementSibling && field.nextElementSibling.classList.contains('error-message')) {
-                        field.nextElementSibling.remove();
-                    }
-                }
-                
-                // Email validation
-                if (field.type === 'email' && field.value.trim()) {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (!emailRegex.test(field.value)) {
-                        isValid = false;
-                        field.classList.add('error');
-                        
-                        if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
-                            const errorMsg = document.createElement('span');
-                            errorMsg.className = 'error-message';
-                            errorMsg.textContent = 'Please enter a valid email address';
-                            errorMsg.style.color = '#e74c3c';
-                            errorMsg.style.fontSize = '0.8rem';
-                            errorMsg.style.marginTop = '5px';
-                            errorMsg.style.display = 'block';
-                            field.parentNode.insertBefore(errorMsg, field.nextSibling);
-                        }
-                    }
-                }
-            });
-            
-            if (isValid) {
-                // Show success message
-                const submitBtn = this.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                
-                submitBtn.textContent = 'Processing...';
-                submitBtn.disabled = true;
-                
-                // Simulate form submission
-                setTimeout(() => {
-                    submitBtn.textContent = 'Success!';
-                    submitBtn.style.backgroundColor = '#2ecc71';
-                    
-                    setTimeout(() => {
-                        submitBtn.textContent = originalText;
-                        submitBtn.disabled = false;
-                        submitBtn.style.backgroundColor = '';
-                        form.reset();
-                        
-                        // Show success notification
-                        showNotification('Form submitted successfully! We will contact you soon.', 'success');
-                    }, 2000);
-                }, 1500);
-            }
-        });
-    });
-    
-    // Notification System
-    function showNotification(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        
-        notification.style.position = 'fixed';
-        notification.style.top = '20px';
-        notification.style.right = '20px';
-        notification.style.padding = '15px 25px';
-        notification.style.borderRadius = '5px';
-        notification.style.color = '#fff';
-        notification.style.zIndex = '10000';
-        notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
-        notification.style.transform = 'translateX(150%)';
-        notification.style.transition = 'transform 0.3s ease';
-        
-        if (type === 'success') {
-            notification.style.backgroundColor = '#2ecc71';
-        } else if (type === 'error') {
-            notification.style.backgroundColor = '#e74c3c';
-        } else {
-            notification.style.backgroundColor = '#3498db';
-        }
-        
-        document.body.appendChild(notification);
-        
-        // Animate in
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 10);
-        
-        // Remove after 5 seconds
-        setTimeout(() => {
-            notification.style.transform = 'translateX(150%)';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 5000);
-    }
-    
-    // Add scroll reveal animations
+    // Scroll Reveal Animation
     const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
-    
     const scrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('revealed');
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    });
+    }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
     
     scrollRevealElements.forEach(element => {
         scrollObserver.observe(element);
     });
     
-    // Add current year to footer if exists
+    // Add current year to footer
     const yearElement = document.getElementById('currentYear');
     if (yearElement) {
         yearElement.textContent = new Date().getFullYear();
-    }
-    
-    // Page Load Animation
-    const pageContent = document.querySelector('.page-load');
-    if (pageContent) {
-        setTimeout(() => {
-            pageContent.classList.add('show');
-        }, 100);
     }
     
     // Emergency button heartbeat effect
@@ -266,4 +121,245 @@ document.addEventListener('DOMContentLoaded', function() {
     if (emergencyBtn) {
         emergencyBtn.classList.add('heartbeat');
     }
+    
+    // FAQ Toggle for Contact Page
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (faqItems.length) {
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            if (question) {
+                question.addEventListener('click', function() {
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    item.classList.toggle('active');
+                });
+            }
+        });
+    }
+    
+    // Contact Form Handler - IMPROVED WITH WORKING SUBMISSION
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const phone = document.getElementById('contactPhone').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            const whatsappPreference = document.getElementById('contactWhatsapp').checked;
+            
+            // Validate form
+            if (!name || !email || !phone || !subject || !message) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            // Create email body
+            let emailBody = `New Contact Form Message\n\n`;
+            emailBody += `Name: ${name}\n`;
+            emailBody += `Email: ${email}\n`;
+            emailBody += `Phone: ${phone}\n`;
+            emailBody += `Subject: ${subject}\n`;
+            emailBody += `WhatsApp Contact: ${whatsappPreference ? 'Yes' : 'No'}\n\n`;
+            emailBody += `Message:\n${message}\n\n`;
+            emailBody += `---\nSent from Dr. GVKR's Neuro Care Website Contact Form`;
+            
+            // Create WhatsApp message if preferred
+            if (whatsappPreference) {
+                const whatsappMsg = `Hello Dr. GVKR's Neuro Care,\n\nI am ${name}.\nPhone: ${phone}\n\nQuery: ${message.substring(0, 200)}`;
+                setTimeout(() => {
+                    window.open(`https://wa.me/919494067108?text=${encodeURIComponent(whatsappMsg)}`, '_blank');
+                }, 500);
+            }
+            
+            // Simulate email sending (opens email client)
+            setTimeout(() => {
+                const mailtoLink = `mailto:neurocarebydrgvkrgoud@gmail.com?subject=Contact Form: ${subject} - ${name}&body=${encodeURIComponent(emailBody)}`;
+                window.location.href = mailtoLink;
+                
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Sent Successfully!';
+                submitBtn.style.backgroundColor = '#2ecc71';
+                
+                showNotification('Your message has been sent! We will contact you shortly.', 'success');
+                
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    contactForm.reset();
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = '';
+                }, 2000);
+            }, 1000);
+        });
+    }
+    
+    // Helper function to show notifications
+    function showNotification(message, type) {
+        // Remove any existing notification
+        const existingNotification = document.querySelector('.custom-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `custom-notification ${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            </div>
+            <button class="notification-close">&times;</button>
+        `;
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            min-width: 280px;
+            background: ${type === 'success' ? '#2ecc71' : '#e74c3c'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            z-index: 10000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            animation: slideInRight 0.3s ease;
+        `;
+        
+        const closeBtn = notification.querySelector('.notification-close');
+        closeBtn.style.cssText = `
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 5px;
+        `;
+        
+        closeBtn.addEventListener('click', () => {
+            notification.remove();
+        });
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+    
+    // Appointment Form Handler
+    const appointmentForm = document.getElementById('appointmentForm');
+    if (appointmentForm) {
+        const today = new Date().toISOString().split('T')[0];
+        const preferredDate = document.getElementById('preferredDate');
+        if (preferredDate) preferredDate.min = today;
+        
+        const whatsappBtn = document.querySelector('.btn-whatsapp');
+        if (whatsappBtn) {
+            whatsappBtn.addEventListener('click', function(e) {
+                const name = document.getElementById('fullName')?.value || '';
+                const phone = document.getElementById('phone')?.value || '';
+                const symptoms = document.getElementById('symptoms')?.value || '';
+                
+                let message = `Hello Dr. GVKR's Neuro Care, I would like to book an appointment.`;
+                if (name) message += ` Name: ${name}`;
+                if (phone) message += ` Phone: ${phone}`;
+                if (symptoms) message += ` Symptoms: ${symptoms.substring(0, 100)}`;
+                
+                this.href = `https://wa.me/919494067108?text=${encodeURIComponent(message)}`;
+            });
+        }
+        
+        appointmentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const whatsappChecked = document.getElementById('whatsapp').checked;
+            
+            if (whatsappChecked) {
+                let message = `Appointment Booking Request:\n`;
+                message += `Name: ${formData.get('fullName')}\n`;
+                message += `Phone: ${formData.get('phone')}\n`;
+                message += `Age: ${formData.get('age')}\n`;
+                message += `Symptoms: ${formData.get('symptoms')}\n`;
+                message += `Preferred Date: ${formData.get('preferredDate')}\n`;
+                message += `Preferred Time: ${formData.get('preferredTime')}\n`;
+                if (formData.get('doctor')) {
+                    message += `Preferred Doctor: ${formData.get('doctor')}\n`;
+                }
+                
+                const whatsappUrl = `https://wa.me/919494067108?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Booking...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                submitBtn.textContent = 'Appointment Booked!';
+                submitBtn.style.backgroundColor = '#2ecc71';
+                
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = '';
+                    appointmentForm.reset();
+                    
+                    showNotification(
+                        whatsappChecked 
+                            ? 'Redirecting to WhatsApp for confirmation!' 
+                            : 'Appointment request submitted! We will call you to confirm.',
+                        'success'
+                    );
+                    
+                    if (!whatsappChecked) {
+                        const emailBody = `Appointment Request:\nName: ${formData.get('fullName')}\nPhone: ${formData.get('phone')}\nAge: ${formData.get('age')}\nSymptoms: ${formData.get('symptoms')}\nPreferred Date: ${formData.get('preferredDate')}\nPreferred Time: ${formData.get('preferredTime')}`;
+                        window.location.href = `mailto:neurocarebydrgvkrgoud@gmail.com?subject=Appointment Request - ${formData.get('fullName')}&body=${encodeURIComponent(emailBody)}`;
+                    }
+                }, 2000);
+            }, 1500);
+        });
+    }
+    
+    // Add typing effect to form inputs for better UX
+    const formInputs = document.querySelectorAll('input, textarea, select');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        input.addEventListener('blur', function() {
+            if (!this.value) {
+                this.parentElement.classList.remove('focused');
+            }
+        });
+    });
 });

@@ -186,9 +186,8 @@
 .btn-hover-effect:hover::after {
     left: 100%;
 }
-/* Additional CSS for Medical Icons */
 
-/* Floating Medical Icons */
+/* Additional CSS for Medical Icons */
 .floating-medical-icons {
     pointer-events: none;
 }

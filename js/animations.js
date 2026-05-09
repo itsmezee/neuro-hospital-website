@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Floating medical icons
     setTimeout(createFloatingMedicalIcons, 2000);
+    
+    // WhatsApp Popup Functionality
+    initWhatsAppPopup();
 });
 
 // Brain Wave Animation
@@ -117,9 +120,6 @@ function initNeuronAnimation() {
     });
 }
 
-// Remove the old createNeuronConnection function entirely
-// No more popping icons!
-
 // Parallax Scrolling Effect
 function initParallaxEffect() {
     const parallaxElements = document.querySelectorAll('.parallax');
@@ -145,7 +145,7 @@ function initTypingEffect() {
     heroTitle.textContent = '';
     
     let i = 0;
-    const typingSpeed = 50; // ms per character
+    const typingSpeed = 50;
     
     function typeWriter() {
         if (i < textToType.length) {
@@ -153,12 +153,10 @@ function initTypingEffect() {
             i++;
             setTimeout(typeWriter, typingSpeed);
         } else {
-            // Restore original HTML with highlights
             heroTitle.innerHTML = originalText;
         }
     }
     
-    // Start typing effect when hero section is in view
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
             typeWriter();
@@ -174,10 +172,8 @@ function initServiceCardAnimations() {
     const serviceCards = document.querySelectorAll('.service-card');
     
     serviceCards.forEach((card, index) => {
-        // Add delay for staggered animation
         card.style.animationDelay = `${index * 0.2}s`;
         
-        // Add hover effect with neuro theme
         card.addEventListener('mouseenter', function() {
             const icon = this.querySelector('.service-icon i');
             if (icon) {
@@ -200,7 +196,6 @@ function initDoctorConsultation() {
     const doctorAvatar = document.querySelector('.doctor-avatar');
     if (!doctorAvatar) return;
     
-    // Create speech bubble container if it doesn't exist
     let speechBubble = document.querySelector('.speech-bubble');
     if (!speechBubble) {
         speechBubble = document.createElement('div');
@@ -221,7 +216,6 @@ function initDoctorConsultation() {
             transition: opacity 0.5s ease;
         `;
         
-        // Add speech bubble arrow
         const arrow = document.createElement('div');
         arrow.style.cssText = `
             position: absolute;
@@ -247,30 +241,25 @@ function initDoctorConsultation() {
         speechBubble.appendChild(arrow);
         speechBubble.appendChild(bubbleText);
         
-        // Position doctor avatar relative for proper positioning
         doctorAvatar.style.position = 'relative';
         doctorAvatar.parentElement.style.position = 'relative';
         doctorAvatar.parentElement.appendChild(speechBubble);
     }
     
-    // Add interactive consultation
     doctorAvatar.addEventListener('click', function() {
         startConsultationAnimation();
     });
     
-    // Add hover effect to show speech bubble
     doctorAvatar.addEventListener('mouseenter', function() {
         speechBubble.style.opacity = '1';
     });
     
     doctorAvatar.addEventListener('mouseleave', function() {
-        // Only hide if not currently showing a question
         if (!speechBubble.classList.contains('active')) {
             speechBubble.style.opacity = '0';
         }
     });
     
-    // Auto start consultation after 10 seconds
     setTimeout(startConsultationAnimation, 10000);
 }
 
@@ -297,25 +286,19 @@ function startConsultationAnimation() {
     function askQuestion() {
         speechText.textContent = questions[currentQuestion];
         doctorAvatar.style.animation = 'doctorTalk 1s ease';
-        
-        // Add pulsing effect to speech bubble
         speechBubble.style.animation = 'bubblePulse 1s ease';
         
-        // Reset animations
         setTimeout(() => {
             doctorAvatar.style.animation = '';
             speechBubble.style.animation = '';
         }, 1000);
         
         currentQuestion = (currentQuestion + 1) % questions.length;
-        
-        // Schedule next question
         setTimeout(askQuestion, 8000);
     }
     
     askQuestion();
     
-    // Add keyframes for animations
     const styleSheet = document.createElement('style');
     if (!document.querySelector('#doctor-animations')) {
         styleSheet.id = 'doctor-animations';
@@ -324,17 +307,10 @@ function startConsultationAnimation() {
                 0%, 100% { transform: scale(1); }
                 50% { transform: scale(1.05); }
             }
-            
             @keyframes bubblePulse {
                 0%, 100% { transform: translateY(-50%) scale(1); }
                 50% { transform: translateY(-50%) scale(1.05); }
             }
-            
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-            }
-            
             .speech-bubble::before {
                 content: '';
                 position: absolute;
@@ -367,31 +343,15 @@ function createFloatingMedicalIcons() {
         overflow: hidden;
     `;
     
-    // Medical icons array
     const medicalIcons = [
-        'fa-user-md',        // Doctor
-        'fa-stethoscope',    // Stethoscope
-        'fa-heartbeat',      // Heartbeat
-        'fa-brain',          // Brain
-        'fa-hospital',       // Hospital
-        'fa-clinic-medical', // Clinic
-        'fa-ambulance',      // Ambulance
-        'fa-prescription',   // Prescription
-        'fa-pills',          // Pills
-        'fa-syringe',        // Syringe
-        'fa-medkit',         // Medkit
-        'fa-procedures',     // Procedures
-        'fa-microscope',     // Microscope
-        'fa-dna',            // DNA
-        'fa-wheelchair'      // Wheelchair
+        'fa-user-md', 'fa-stethoscope', 'fa-heartbeat', 'fa-brain', 'fa-hospital',
+        'fa-clinic-medical', 'fa-ambulance', 'fa-prescription', 'fa-pills', 'fa-syringe',
+        'fa-medkit', 'fa-procedures', 'fa-microscope', 'fa-dna', 'fa-wheelchair'
     ];
     
-    // Create floating medical icons
     for (let i = 0; i < 15; i++) {
         const medicalIcon = document.createElement('div');
         medicalIcon.className = 'floating-medical-icon';
-        
-        // Randomly select a medical icon
         const randomIcon = medicalIcons[Math.floor(Math.random() * medicalIcons.length)];
         
         medicalIcon.innerHTML = `<i class="fas ${randomIcon}"></i>`;
@@ -410,26 +370,14 @@ function createFloatingMedicalIcons() {
         medicalContainer.appendChild(medicalIcon);
     }
     
-    // Add keyframes for floating medical icons animation
     const styleSheet = document.createElement('style');
     styleSheet.textContent = `
         @keyframes floatMedicalIcon {
-            0% { 
-                transform: translateY(100vh) rotate(0deg) scale(0.8); 
-                opacity: 0;
-            }
-            10% { 
-                opacity: 0.5;
-            }
-            90% { 
-                opacity: 0.5;
-            }
-            100% { 
-                transform: translateY(-100vh) rotate(360deg) scale(1.2); 
-                opacity: 0;
-            }
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
-        
         .floating-medical-icon:hover i {
             color: #3498db !important;
             transform: scale(1.3);
@@ -437,8 +385,60 @@ function createFloatingMedicalIcons() {
         }
     `;
     document.head.appendChild(styleSheet);
-    
     document.body.appendChild(medicalContainer);
+}
+
+// WhatsApp Popup Functionality
+function initWhatsAppPopup() {
+    const whatsappFloat = document.querySelector('.whatsapp-float');
+    if (!whatsappFloat) return;
+    
+    let modal = document.querySelector('.whatsapp-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.className = 'whatsapp-modal';
+        modal.innerHTML = `
+            <div class="modal-header">
+                <h4><i class="fab fa-whatsapp"></i> Connect with Dr. GVKR</h4>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <a href="tel:9494067108" class="modal-option">
+                    <i class="fas fa-phone-alt"></i>
+                    <div>
+                        <strong>Call Now</strong>
+                        <small>Emergency / Appointment</small>
+                    </div>
+                </a>
+                <a href="https://wa.me/919494067108?text=Hello%20Dr.%20GVKR's%20Neuro%20Care,%20I%20would%20like%20to%20book%20an%20appointment%20for%20neurological%20consultation." target="_blank" class="modal-option">
+                    <i class="fab fa-whatsapp"></i>
+                    <div>
+                        <strong>Message on WhatsApp</strong>
+                        <small>Book Appointment / Query</small>
+                    </div>
+                </a>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    whatsappFloat.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.classList.toggle('active');
+    });
+    
+    const closeBtn = modal.querySelector('.close-modal');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+    }
+    
+    document.addEventListener('click', (e) => {
+        if (!modal.contains(e.target) && !whatsappFloat.contains(e.target)) {
+            modal.classList.remove('active');
+        }
+    });
 }
 
 // Add CSS for doctor section positioning
@@ -450,18 +450,15 @@ doctorStyles.textContent = `
         display: flex;
         align-items: center;
     }
-    
     .doctor-avatar {
         position: relative;
         cursor: pointer;
         transition: transform 0.3s ease;
         z-index: 2;
     }
-    
     .doctor-avatar:hover {
         transform: scale(1.05);
     }
-    
     .speech-bubble {
         position: absolute;
         left: 120px !important;
@@ -479,11 +476,9 @@ doctorStyles.textContent = `
         backdrop-filter: blur(5px);
         border: 1px solid rgba(26, 188, 156, 0.1);
     }
-    
     .speech-bubble.active {
         opacity: 1 !important;
     }
-    
     .speech-bubble p {
         margin: 0;
         color: #2c3e50;
@@ -492,7 +487,6 @@ doctorStyles.textContent = `
         font-weight: 500;
         font-family: 'Arial', sans-serif;
     }
-    
     .speech-bubble::before {
         content: '';
         position: absolute;
@@ -505,12 +499,10 @@ doctorStyles.textContent = `
         border-bottom: 10px solid transparent;
         border-right: 10px solid white;
     }
-    
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(-50%) translateX(-10px); }
         to { opacity: 1; transform: translateY(-50%) translateX(0); }
     }
-    
     .speech-bubble.active {
         animation: fadeIn 0.5s ease forwards;
     }
